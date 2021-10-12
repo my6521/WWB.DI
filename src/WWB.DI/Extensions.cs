@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
-using WWB.DI.Dependencies;
 
 namespace WWB.DI
 {
@@ -24,22 +23,22 @@ namespace WWB.DI
             {
                 scan
                 .FromApplicationDependencies(assembly => !filters.Any(x => assembly.FullName.StartsWith(x)))
-                .AddClasses(classes => classes.AssignableTo<IScopedWithInterfaces>())
+                .AddClasses(classes => classes.AssignableTo<IScopedDependency>())
                     .AsImplementedInterfaces()
                     .WithScopedLifetime()
-                .AddClasses(classes => classes.AssignableTo<ITransientWithInterfaces>())
+                .AddClasses(classes => classes.AssignableTo<ITransientDependency>())
                     .AsSelfWithInterfaces()
                     .WithTransientLifetime()
-                .AddClasses(classes => classes.AssignableTo<ISingletonWithInterfaces>())
+                .AddClasses(classes => classes.AssignableTo<ISingletonDependency>())
                     .AsSelfWithInterfaces()
                     .WithSingletonLifetime()
-                .AddClasses(classes => classes.AssignableTo<IScopedOnlySelf>())
+                .AddClasses(classes => classes.AssignableTo<IScopedDependencyOnlySelf>())
                     .AsSelf()
                     .WithScopedLifetime()
-                .AddClasses(classes => classes.AssignableTo<ITransientOnlySelf>())
+                .AddClasses(classes => classes.AssignableTo<ITransientDependencyOnlySelf>())
                     .AsSelf()
                     .WithTransientLifetime()
-                .AddClasses(classes => classes.AssignableTo<ISingletonOnlySelf>())
+                .AddClasses(classes => classes.AssignableTo<ISingletonDependencyOnlySelf>())
                     .AsSelf()
                     .WithSingletonLifetime();
             });
