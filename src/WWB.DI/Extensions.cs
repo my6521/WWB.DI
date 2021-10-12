@@ -35,7 +35,7 @@ namespace WWB.DI
             return services.Scan(scan => scan.FromAssemblies(assemblies).AddClass());
         }
 
-        public static IServiceCollection AddServicesFromAllAssembly(this IServiceCollection services, Action<ITypeSourceSelector> action)
+        public static IServiceCollection AddServicesFromSelector(this IServiceCollection services, Action<ITypeSourceSelector> action)
         {
             return services.Scan(action);
         }
