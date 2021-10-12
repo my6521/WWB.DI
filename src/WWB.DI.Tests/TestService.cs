@@ -7,12 +7,12 @@ namespace WWB.DI.Tests.Service
         void Say();
     }
 
-    public interface IServiceA : IServiceAA
+    public interface IServiceA
     {
         void Say();
     }
 
-    public class ServiceA : IServiceA, IScopedDependency
+    public class ServiceA : IServiceAA, IServiceA, IScopedDependency
     {
         public void Say()
         {
