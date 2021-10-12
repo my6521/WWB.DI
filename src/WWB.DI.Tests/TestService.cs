@@ -1,4 +1,5 @@
 ﻿using System;
+using WWB.DI.Dependencies;
 
 namespace WWB.DI.Tests.Service
 {
@@ -7,12 +8,12 @@ namespace WWB.DI.Tests.Service
         void Say();
     }
 
-    public interface IServiceA
+    public interface IServiceA : IServiceAA
     {
         void Say();
     }
 
-    public class ServiceA : IServiceAA, IServiceA, IScopedDependency
+    public class ServiceA : IServiceA, IScopedWithInterfaces
     {
         public void Say()
         {

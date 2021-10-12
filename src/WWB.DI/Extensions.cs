@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
+using System;
 using System.Linq;
+using System.Reflection;
 
 namespace WWB.DI
 {
@@ -19,18 +22,35 @@ namespace WWB.DI
                 "Window",
             };
 
-            return services.Scan(scan =>
-            {
-                scan
-                .FromApplicationDependencies(assembly => !filters.Any(x => assembly.FullName.StartsWith(x)))
+            return services.Scan(scan => scan.FromApplicationDependencies(assembly => !filters.Any(x => assembly.FullName.StartsWith(x))).AddClass());
+        }
+
+        public static IServiceCollection AddServicesFromTypes(this IServiceCollection services, params Type[] types)
+        {
+            return services.Scan(scan => scan.FromAssembliesOf(types).AddClass());
+        }
+
+        public static IServiceCollection AddServicesFromAssemblies(this IServiceCollection services, params Assembly[] assemblies)
+        {
+            return services.Scan(scan => scan.FromAssemblies(assemblies).AddClass());
+        }
+
+        public static IServiceCollection AddServicesFromAllAssembly(this IServiceCollection services, Action<ITypeSourceSelector> action)
+        {
+            return services.Scan(action);
+        }
+
+        private static void AddClass(this IImplementationTypeSelector select)
+        {
+            select
                 .AddClasses(classes => classes.AssignableTo<IScopedDependency>())
-                    .AsMatchingInterface()
-                    .WithScopedLifetime()
+                      .AsImplementedInterfaces()
+                      .WithScopedLifetime()
                 .AddClasses(classes => classes.AssignableTo<ITransientDependency>())
-                    .AsMatchingInterface()
+                    .AsSelfWithInterfaces()
                     .WithTransientLifetime()
                 .AddClasses(classes => classes.AssignableTo<ISingletonDependency>())
-                    .AsMatchingInterface()
+                    .AsSelfWithInterfaces()
                     .WithSingletonLifetime()
                 .AddClasses(classes => classes.AssignableTo<IScopedDependencyOnlySelf>())
                     .AsSelf()
@@ -41,7 +61,7 @@ namespace WWB.DI
                 .AddClasses(classes => classes.AssignableTo<ISingletonDependencyOnlySelf>())
                     .AsSelf()
                     .WithSingletonLifetime();
-            });
+
         }
 
     }
